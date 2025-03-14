@@ -1,0 +1,46 @@
+networks:
+  shared-net:
+    driver: bridge
+volumes:
+  parsl:
+services:
+  taskserver:
+    image: parsl-app
+    platform: linux/amd64
+    environment:
+      - MOFKA_GROUPFILE="/mnt/parsl/mofka.json"
+      - MOFKA_PROTOCOL="tcp"
+    env_file:
+      - .env
+    networks:
+      - shared-net
+    volumes:
+      - parsl:/mnt/parsl
+    depends_on:
+      bedrock:
+        condition: service_healthy
+        restart: true
+    deploy:
+      resources:
+        limits:
+          memory: 24g
+  bedrock:
+    image: parsl-app
+    platform: linux/amd64
+    volumes:
+      - parsl:/mnt/parsl
+      - $PWD:/mofa
+    environment:
+      - MOFKA_GROUPFILE="/mnt/parsl/mofka.json"
+    networks:
+      - shared-net
+    entrypoint:
+      - /bin/bash
+    command:
+      - /launch_mofka.sh
+    healthcheck:
+      test: ["CMD-SHELL", "ls /mofka.launched"]
+      interval: 5s
+      retries: 3
+      start_period: 5s
+      timeout: 1s
