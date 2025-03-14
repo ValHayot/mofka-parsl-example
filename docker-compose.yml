@@ -8,10 +8,8 @@ services:
     image: parsl-app
     platform: linux/amd64
     environment:
-      - MOFKA_GROUPFILE="/mnt/parsl/mofka.json"
-      - MOFKA_PROTOCOL="tcp"
-    env_file:
-      - .env
+      - MOFKA_GROUPFILE=/mnt/parsl/mofka.json
+      - MOFKA_PROTOCOL=tcp
     networks:
       - shared-net
     volumes:
@@ -29,9 +27,9 @@ services:
     platform: linux/amd64
     volumes:
       - parsl:/mnt/parsl
-      - $PWD:/mofa
     environment:
-      - MOFKA_GROUPFILE="/mnt/parsl/mofka.json"
+      - MOFKA_GROUPFILE=/mnt/parsl/mofka.json
+      - MOFKA_PROTOCOL=tcp
     networks:
       - shared-net
     entrypoint:
@@ -40,7 +38,7 @@ services:
       - /launch_mofka.sh
     healthcheck:
       test: ["CMD-SHELL", "ls /mofka.launched"]
-      interval: 5s
+      interval: 60s
       retries: 3
       start_period: 5s
-      timeout: 1s
+      timeout: 120s

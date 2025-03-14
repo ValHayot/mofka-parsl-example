@@ -2,8 +2,8 @@ FROM ghcr.io/mochi-hpc/mochi-spack-buildcache:mofka-0.6.2-juktd5mx7a2mycmnsdc3mm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update
-RUN apt-get install -y git
+RUN apt-get update && \
+    apt-get install -y git
 
 ENV PATH="/root/miniconda3/bin:${PATH}"
 ARG PATH="/root/miniconda3/bin:${PATH}"
@@ -15,7 +15,11 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install parsl
+RUN python -m venv .venv
+
+ENV PATH="/.venv/bin:$PATH"
+
+RUN pip install parsl "git+https://github.com/proxystore/extensions.git@exchange"
 
 COPY parsl_stream.py .
 COPY mofka_config.json .

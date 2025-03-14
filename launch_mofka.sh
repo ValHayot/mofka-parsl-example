@@ -41,8 +41,9 @@ if [ -n "${MOFKA_GROUPFILE}" ]; then
     mofkactl topic create ${t_requests} --groupfile ${groupfile}
     mofkactl partition add ${t_requests} --type ${partition} --rank 0 --groupfile ${groupfile} --metadata "${METADATA_PROVIDER}" --data "${DATA_PROVIDER}"
 
+    sleep 60
+    touch /mnt/parsl/started
     wait ${BEDROCK_PID}
-    touch mofka.launched
 else
     touch /mnt/mofa/mofka.json
     sleep 50

@@ -2,6 +2,7 @@ import parsl
 import logging
 import sys
 import os
+import time
 
 from uuid import uuid4
 
@@ -27,6 +28,9 @@ config = Config(
 )
 parsl.clear()
 parsl.load(config)
+
+logger.debug("Sleeping 50 seconds to ensure Mofka topics have been created")
+time.sleep(50)
 
 
 @parsl.python_app
